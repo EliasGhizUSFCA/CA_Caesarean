@@ -5,16 +5,16 @@ Add a brief description of your project, in a sentence or two.
 
 | Name | GitHubID | Role / Focus |
 | --- | --- | --- |
-| FULL NAME | id | e.g. Streamlit app - map |
-| FULL NAME | id | e.g. scraping for SF news data  + scheduled collection |
-| FULL NAME | id | e.g. API call for SF crimedata + data cleaning |
-| FULL NAME | id | e.g. Streamlit app - interactive bargraph|
-| FULL NAME | id | e.g. API call weather data +  scheduled collection|
+| Chloe Buhl | cjbuhl | GCP,Docker, and Streamlit|
+| Mary Kim | MaryHCDS | FastAPI and Report |
+| Elias Ghiz | EliasGhizUSFCA | README and Streamlit |
+| Narayan Poudel | naryan | FastAPI |
+| Mammoune El Boukfaoui | melboukfaoui | Streamlit |
+
 ---
 
 ## Problem Statement
-- Follow the direction given in the 1st assignment
-
+Cesarean delivery is typically framed as a clinical decision made for an individual patient. However, c-section rates in the United States vary wildly across hospitals, even among fairly low risk births. Our project would seek to quantify that gap for hospitals in California with visualizations that utilize available observed hospital data. We will combine HCAI's utilization rates with CMS facility characteristics, scraped CMQCC and Cal Hospital Compare maternity measures, United States Census county data and finally the CalHHS facility crosswalk to join these datasets. The final product would be a maps and comparison view where a user could select a county and see available hospital's, c-section, NTSV c-section and VBAC rates side by side, filtered by year and hospital ownership type. This deliverable could serve expectant parents choosing a hospital for delivery and quality committees who want a more local benchmark than just the statewide average.
 
 ---
 
