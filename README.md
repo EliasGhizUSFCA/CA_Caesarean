@@ -78,8 +78,24 @@ Make sure it writes the data in the bucket.
 ---
 ## Repository Structure
 ```
-.
-├── your_code.py
+  API
+  ├── Dockerfile
+  ├── main.py
+  ├── requirements.txt
+  ├── storage.py
+  ├── transform.py
+  ├── data1.py
+  ├── data2.py
+  ├── data3.py
+  └── data4.py
+
+  Streamlit
+  ├── Dockerfile
+  ├── dashboard.py
+  ├── requirements.txt
+  └──  user_definition.py
+
 ├── .env_template
+├── gcloud_command.sh
 └── README.md
 ```
