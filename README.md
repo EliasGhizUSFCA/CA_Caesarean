@@ -5,9 +5,9 @@ C-section rates vary greatly from one California hospital to the next. Our team 
 
 | Name | GitHubID | Role / Focus |
 | --- | --- | --- |
-| Chloe Buhl | cjbuhl | GCP,Docker, and Streamlit|
+| Chloe Buhl | cjbuhl | Crosswalk and Join Data|
 | Mary Kim | MaryHCDS | FastAPI and Report |
-| Elias Ghiz | EliasGhizUSFCA | README and Streamlit |
+| Elias Ghiz | EliasGhizUSFCA | README and Calhospitalcompare Scraping |
 | Narayan Poudel | naryan | FastAPI |
 | Mammoune El Boukfaoui | melboukfaoui | Streamlit |
 
