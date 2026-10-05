@@ -1,1 +1,8 @@
-# this is where your docker layer for the image will be built
+FROM python:3.13-slim
+WORKDIR /CA_Caesarean/streamlit
+COPY requirements.txt ./
+RUN pip install -r requirements.txt 
+
+COPY . .
+EXPOSE 8501
+CMD ["streamlit", "run", "dashboard.py", "--server.port=8501", "--server.address=0.0.0.0"]
