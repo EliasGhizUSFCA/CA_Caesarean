@@ -12,6 +12,7 @@ hcai_url = os.getenv("HCAI_DATA_URL")
 
 #download 
 response = requests.get(hcai_url)
+response.raise_for_status()
 
 #store 
 store_to_gcs(

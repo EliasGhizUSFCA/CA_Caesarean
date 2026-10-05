@@ -14,7 +14,7 @@ def store_to_gcs(service_account_key: str,
                  project_id: str,
                  bucket_name: str,
                  file_name: str,
-                 data: str) -> None:    
+                 data: bytes,)-> None:    
     credentials = service_account.Credentials.from_service_account_file(service_account_key)
     client = storage.Client(project=project_id,
                             credentials=credentials)
