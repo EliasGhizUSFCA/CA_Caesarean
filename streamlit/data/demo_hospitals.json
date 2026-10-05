@@ -1,0 +1,270 @@
+{
+  "source": "Synthetic demonstration data \u2014 fictional hospitals; not HCAI or CMS observations",
+  "updated_at": "Demo fixture v1 (not a source publication date)",
+  "records": [
+    {
+      "hospital_id": "DEMO-001",
+      "hospital_name": "Demo Bay Hospital",
+      "county": "San Francisco",
+      "ownership": "Nonprofit",
+      "cesarean_rate": 28.6,
+      "primary_cesarean_rate": 20.4,
+      "ntsv_cesarean_rate": 23.3,
+      "vbac_rate": 16.4,
+      "year": 2022
+    },
+    {
+      "hospital_id": "DEMO-002",
+      "hospital_name": "Demo Harbor Hospital",
+      "county": "San Francisco",
+      "ownership": "Government",
+      "cesarean_rate": 31.8,
+      "primary_cesarean_rate": 22.2,
+      "ntsv_cesarean_rate": null,
+      "vbac_rate": 15.0,
+      "year": 2022
+    },
+    {
+      "hospital_id": "DEMO-003",
+      "hospital_name": "Demo Redwood Hospital",
+      "county": "Alameda",
+      "ownership": "Nonprofit",
+      "cesarean_rate": 27.0,
+      "primary_cesarean_rate": 19.3,
+      "ntsv_cesarean_rate": 21.6,
+      "vbac_rate": 18.3,
+      "year": 2022
+    },
+    {
+      "hospital_id": "DEMO-004",
+      "hospital_name": "Demo Valley Hospital",
+      "county": "Alameda",
+      "ownership": "For-profit",
+      "cesarean_rate": 34.4,
+      "primary_cesarean_rate": 24.8,
+      "ntsv_cesarean_rate": 28.0,
+      "vbac_rate": 11.6,
+      "year": 2022
+    },
+    {
+      "hospital_id": "DEMO-005",
+      "hospital_name": "Demo Coast Hospital",
+      "county": "Los Angeles",
+      "ownership": "Nonprofit",
+      "cesarean_rate": 30.3,
+      "primary_cesarean_rate": 21.4,
+      "ntsv_cesarean_rate": 24.5,
+      "vbac_rate": 15.9,
+      "year": 2022
+    },
+    {
+      "hospital_id": "DEMO-006",
+      "hospital_name": "Demo Foothill Hospital",
+      "county": "Los Angeles",
+      "ownership": "Government",
+      "cesarean_rate": null,
+      "primary_cesarean_rate": null,
+      "ntsv_cesarean_rate": null,
+      "vbac_rate": null,
+      "year": 2022
+    },
+    {
+      "hospital_id": "DEMO-007",
+      "hospital_name": "Demo Orchard Hospital",
+      "county": "Sacramento",
+      "ownership": "Nonprofit",
+      "cesarean_rate": 29.4,
+      "primary_cesarean_rate": 20.6,
+      "ntsv_cesarean_rate": 23.8,
+      "vbac_rate": 17.2,
+      "year": 2022
+    },
+    {
+      "hospital_id": "DEMO-008",
+      "hospital_name": "Demo River Hospital",
+      "county": "Sacramento",
+      "ownership": "For-profit",
+      "cesarean_rate": 32.6,
+      "primary_cesarean_rate": 23.2,
+      "ntsv_cesarean_rate": 26.9,
+      "vbac_rate": 13.3,
+      "year": 2022
+    },
+    {
+      "hospital_id": "DEMO-001",
+      "hospital_name": "Demo Bay Hospital",
+      "county": "San Francisco",
+      "ownership": "Nonprofit",
+      "cesarean_rate": 28.0,
+      "primary_cesarean_rate": 19.8,
+      "ntsv_cesarean_rate": 22.7,
+      "vbac_rate": 15.8,
+      "year": 2023
+    },
+    {
+      "hospital_id": "DEMO-002",
+      "hospital_name": "Demo Harbor Hospital",
+      "county": "San Francisco",
+      "ownership": "Government",
+      "cesarean_rate": 31.2,
+      "primary_cesarean_rate": 21.6,
+      "ntsv_cesarean_rate": null,
+      "vbac_rate": 14.4,
+      "year": 2023
+    },
+    {
+      "hospital_id": "DEMO-003",
+      "hospital_name": "Demo Redwood Hospital",
+      "county": "Alameda",
+      "ownership": "Nonprofit",
+      "cesarean_rate": 26.4,
+      "primary_cesarean_rate": 18.7,
+      "ntsv_cesarean_rate": 21.0,
+      "vbac_rate": 17.7,
+      "year": 2023
+    },
+    {
+      "hospital_id": "DEMO-004",
+      "hospital_name": "Demo Valley Hospital",
+      "county": "Alameda",
+      "ownership": "For-profit",
+      "cesarean_rate": 33.8,
+      "primary_cesarean_rate": 24.2,
+      "ntsv_cesarean_rate": 27.4,
+      "vbac_rate": 11.0,
+      "year": 2023
+    },
+    {
+      "hospital_id": "DEMO-005",
+      "hospital_name": "Demo Coast Hospital",
+      "county": "Los Angeles",
+      "ownership": "Nonprofit",
+      "cesarean_rate": 29.7,
+      "primary_cesarean_rate": 20.8,
+      "ntsv_cesarean_rate": 23.9,
+      "vbac_rate": 15.3,
+      "year": 2023
+    },
+    {
+      "hospital_id": "DEMO-006",
+      "hospital_name": "Demo Foothill Hospital",
+      "county": "Los Angeles",
+      "ownership": "Government",
+      "cesarean_rate": null,
+      "primary_cesarean_rate": null,
+      "ntsv_cesarean_rate": null,
+      "vbac_rate": null,
+      "year": 2023
+    },
+    {
+      "hospital_id": "DEMO-007",
+      "hospital_name": "Demo Orchard Hospital",
+      "county": "Sacramento",
+      "ownership": "Nonprofit",
+      "cesarean_rate": 28.8,
+      "primary_cesarean_rate": 20.0,
+      "ntsv_cesarean_rate": 23.2,
+      "vbac_rate": 16.6,
+      "year": 2023
+    },
+    {
+      "hospital_id": "DEMO-008",
+      "hospital_name": "Demo River Hospital",
+      "county": "Sacramento",
+      "ownership": "For-profit",
+      "cesarean_rate": 32.0,
+      "primary_cesarean_rate": 22.6,
+      "ntsv_cesarean_rate": 26.3,
+      "vbac_rate": 12.7,
+      "year": 2023
+    },
+    {
+      "hospital_id": "DEMO-001",
+      "hospital_name": "Demo Bay Hospital",
+      "county": "San Francisco",
+      "ownership": "Nonprofit",
+      "cesarean_rate": 27.4,
+      "primary_cesarean_rate": 19.2,
+      "ntsv_cesarean_rate": 22.1,
+      "vbac_rate": 15.2,
+      "year": 2024
+    },
+    {
+      "hospital_id": "DEMO-002",
+      "hospital_name": "Demo Harbor Hospital",
+      "county": "San Francisco",
+      "ownership": "Government",
+      "cesarean_rate": 30.6,
+      "primary_cesarean_rate": 21.0,
+      "ntsv_cesarean_rate": null,
+      "vbac_rate": 13.8,
+      "year": 2024
+    },
+    {
+      "hospital_id": "DEMO-003",
+      "hospital_name": "Demo Redwood Hospital",
+      "county": "Alameda",
+      "ownership": "Nonprofit",
+      "cesarean_rate": 25.8,
+      "primary_cesarean_rate": 18.1,
+      "ntsv_cesarean_rate": 20.4,
+      "vbac_rate": 17.1,
+      "year": 2024
+    },
+    {
+      "hospital_id": "DEMO-004",
+      "hospital_name": "Demo Valley Hospital",
+      "county": "Alameda",
+      "ownership": "For-profit",
+      "cesarean_rate": 33.2,
+      "primary_cesarean_rate": 23.6,
+      "ntsv_cesarean_rate": 26.8,
+      "vbac_rate": 10.4,
+      "year": 2024
+    },
+    {
+      "hospital_id": "DEMO-005",
+      "hospital_name": "Demo Coast Hospital",
+      "county": "Los Angeles",
+      "ownership": "Nonprofit",
+      "cesarean_rate": 29.1,
+      "primary_cesarean_rate": 20.2,
+      "ntsv_cesarean_rate": 23.3,
+      "vbac_rate": 14.7,
+      "year": 2024
+    },
+    {
+      "hospital_id": "DEMO-006",
+      "hospital_name": "Demo Foothill Hospital",
+      "county": "Los Angeles",
+      "ownership": "Government",
+      "cesarean_rate": null,
+      "primary_cesarean_rate": null,
+      "ntsv_cesarean_rate": null,
+      "vbac_rate": null,
+      "year": 2024
+    },
+    {
+      "hospital_id": "DEMO-007",
+      "hospital_name": "Demo Orchard Hospital",
+      "county": "Sacramento",
+      "ownership": "Nonprofit",
+      "cesarean_rate": 28.2,
+      "primary_cesarean_rate": 19.4,
+      "ntsv_cesarean_rate": 22.6,
+      "vbac_rate": 16.0,
+      "year": 2024
+    },
+    {
+      "hospital_id": "DEMO-008",
+      "hospital_name": "Demo River Hospital",
+      "county": "Sacramento",
+      "ownership": "For-profit",
+      "cesarean_rate": 31.4,
+      "primary_cesarean_rate": 22.0,
+      "ntsv_cesarean_rate": 25.7,
+      "vbac_rate": 12.1,
+      "year": 2024
+    }
+  ]
+}
