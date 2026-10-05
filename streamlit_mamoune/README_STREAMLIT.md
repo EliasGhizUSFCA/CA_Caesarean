@@ -26,8 +26,8 @@ provided `streamlit` files:
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -r streamlit/requirements.txt
-python -m streamlit run streamlit/dashboard.py
+python -m pip install -r streamlit_mamoune/requirements.txt
+python -m streamlit run streamlit_mamoune/dashboard.py
 ```
 
 Open `http://localhost:8501` if your browser does not open automatically.
@@ -37,7 +37,7 @@ No configuration is required for demo mode. Stop the app with Control+C.
 ## Connect the real backend
 
 1. Give `API_CONTRACT.md` to Narayan and Mary and agree the endpoint/field names.
-2. Copy `streamlit/.env_template` to `streamlit/.env`.
+2. Copy `streamlit_mamoune/.env_template` to `streamlit_mamoune/.env`.
 3. Set `API_SERVICE_URL` to their running backend URL; set endpoint paths if needed.
 4. Restart Streamlit, select **Live API**, and load hospitals.
 5. Check a known hospital/year against the underlying dataset before presentation.
@@ -79,7 +79,7 @@ included or changed by this frontend handoff.
 
 First run `git status` in your existing team repository. Commit or stash unrelated
 work before pulling; do not overwrite anyone else's updated Streamlit files.
-The ZIP's `streamlit/` folder contains only this contribution. Review differences
+The ZIP's `streamlit_mamoune/` folder contains only this contribution. Review differences
 against the current remote version before copying it into the repository.
 
 If the branch does not exist yet, start from an up-to-date main:
@@ -115,8 +115,8 @@ assignment requires. Suggested description:
 From the repository/package root, using the virtual environment above:
 
 ```bash
-python -m pip install -r streamlit/requirements-dev.txt
-python -m pytest streamlit/tests -q
+python -m pip install -r streamlit_mamoune/requirements-dev.txt
+python -m pytest streamlit_mamoune/tests -q
 ```
 
 Manual presentation check: load default demo, filter San Francisco, compare one

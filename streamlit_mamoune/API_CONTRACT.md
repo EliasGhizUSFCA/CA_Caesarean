@@ -70,7 +70,7 @@ Return a complete, filtered result in this shape:
 
 ## Connection
 
-Set `API_SERVICE_URL` in `streamlit/.env` to the real backend URL and choose Live
+Set `API_SERVICE_URL` in `streamlit_mamoune/.env` to the real backend URL and choose Live
 API in the sidebar. Paths are separately configurable with `API_FILTERS_PATH`
 and `API_HOSPITALS_PATH`. Matching path names alone is insufficient: JSON fields
 and query parameter names must also match. Adapt `api_client.py` if needed.
