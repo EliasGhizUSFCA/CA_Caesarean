@@ -5,10 +5,10 @@ C-section rates vary greatly from one California hospital to the next. Our team 
 
 | Name | GitHubID | Role / Focus |
 | --- | --- | --- |
-| Chloe Buhl | cjbuhl | Crosswalk and Join Data|
-| Mary Kim | MaryHCDS | FastAPI / Data Acquisition on hcai and cms, API environment configuration and Docker setup. Tested FastAPI startup locally using a basic FastAPI endpoint. Responsible for reviewing the GCP deployment and Cloud Scheduler set up and final report write-up |
-| Elias Ghiz | EliasGhizUSFCA | README and Calhospitalcompare Scraping |
-| Narayan Poudel | naryan | FastAPI |
+| Chloe Buhl | cjbuhl | Crosswalk, Join Data, Data Cleaning|
+| Mary Kim | MaryHCDS | FastAPI, Report, Streamlit, Data Cleaning|
+| Elias Ghiz | EliasGhizUSFCA | README, Web Scraping, Data Cleaning |
+| Narayan Poudel | naryan | FastAPI, GCP connection, Data Cleaning|
 | Mammoune El Boukfaoui | melboukfaoui | Streamlit |
 
 ---
@@ -26,8 +26,9 @@ Cesarean delivery is typically framed as a clinical decision made for an individ
 | --- | --- | --- | --- | --- | --- |
 | 1 | [HCAI Utilization Rates for Selected Medical Procedures in California Hospitals](https://data.chhs.ca.gov/dataset/utilization-rates-for-selected-medical-procedures-in-california-hospitals) | File | About 3,300 rows, one per hospital per year per procedure: year, county, hospital, OSHPD_ID, procedure, count, rate per 100 deliveries, and latitude/longitude. We keep Cesarean, Primary Cesarean, and VBAC. Covers YEAR–YEAR, all California licnsed hospitals. | Annually last updated 10/10/2025 | None|
 | 2 | [CMS Hospital General Information](https://data.cms.gov/provider-data/dataset/xubh-q36u) | API | About 5,400 rows, one per Medicare registered hospital in the U.S. but we will filter for CA. We use CCN, name, address, ZIP, county, hospital type, ownership, emergency services, birthing friendly designation, and overall star rating. | Quarterly | None; no published rate limit |
-| 3 | [CalHHS Facility Crosswalk](https://data.chhs.ca.gov/dataset/licensed-facility-crosswalk) | CSV retrieve at runtime | This dataset is used to connect HCAI_ID (Licensed healthcare facilities unique ID by California department of healthcare access and information) to CCN (CMS certification number) and NPI (National provider identifier) | Qaurterly | Free key|
-| 4 | [Cal Hospital Compare](https://calhospitalcompare.org/wp-content/uploads/2025/09/Fact-Sheet-w-List-of-Honor-Roll-Hospitals_Maternity-Honor-Roll_CHC_2025.pdf) | Scraped | We use HCAI data (source 1) to identify hospitals that provide maternity services, then collect maternity measures from Cal Hospital Compare. For scraping method, the each hospital pages use https://calhospitalcompare.org/hospital/?id=<hospital_id> | Annual | None; `robots.txt` checked DATE; cited, not redistributed |
+| 3 | [CalHHS Facility Crosswalk](https://data.chhs.ca.gov/dataset/licensed-facility-crosswalk) | CSV, grabbed at runtime | Connects HCAI_ID to CCN and NPI. Filter to hospitals only (General Acute Care Hospital 434, Acute Psychiatric Hospital 125, Chemical Dependency Recovery Hospital 10, Alternative Birthing Center 8); drop closed facilities using license/ASPEN status; determine a rule for parent/child facilities that share a CCN. | NA | None |
+| 4 | [Cal Hospital Compare](https://calhospitalcompare.org/wp-content/provider_list.txt) | Scraping | Quality measures not covered by HCAI, scraped only for hospitals HCAI flags as delivering. Joins on OSHPD_ID (used in each URL). We use NTSV c-section rate, VBAC rate and availability, CNM delivery rate, episiotomy rate, exclusive human milk feeding, and Baby Friendly status. Values are strings that need stripping and casting; missing maternity data is expected for non-delivering hospitals, and all-zero rows for delivering hospitals get flagged for review. | NA | None |
+
 
 Note: If we need a key, say which environment variable holds it and make sure that variable also appears in the .env_template
 
