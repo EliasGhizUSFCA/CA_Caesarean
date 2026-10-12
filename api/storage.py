@@ -25,10 +25,22 @@ def store_to_gcs(service_account_key: str,
     file.upload_from_string(data)
 
 
-def save_file(data, dataset: str, file_name: str, partition: str = "") -> str:
-    parts = [dataset, partition, date.today().strftime("%Y-%m"), file_name] #saves new file every month
-    path = "/".join(p for p in parts if p)
-    store_to_gcs(service_account_key, project_id, bucket_name, path, data)
+def save_file(
+    data,
+    dataset: str,
+    file_name: str,
+    partition: str = "",
+) -> str:
+    path = f"hospital/{dataset}/{file_name}"
+
+    store_to_gcs(
+        service_account_key,
+        project_id,
+        bucket_name,
+        path,
+        data,
+    )
+
     return path
 
 def save_dataframe(df, dataset: str, partition: str = "") -> str:
