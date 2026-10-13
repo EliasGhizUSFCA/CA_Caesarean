@@ -2,6 +2,8 @@ from fastapi import FastAPI, HTTPException
 from sources import cms, ingest_hcai
 from sources.hospital_scrapping import hospital_scrapping
 from storage import save_dataframe, save_file
+from datetime import date
+from sources import crosswalk
 import json
 
 
@@ -33,3 +35,9 @@ def run_scrape_hospitals():
     )
 
     return {"hospitals": len(results), "path": path}
+
+@app.post("/crosswalk")
+def run_crosswalk():
+    data = crosswalk.fetch()
+    path = save_file(data,"crosswalk","data.xlsx",partition=date.today().isoformat())
+    return {"bytes": len(data), "path": path}
