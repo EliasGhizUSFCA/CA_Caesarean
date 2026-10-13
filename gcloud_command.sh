@@ -51,12 +51,13 @@ gcloud iam service-accounts describe "$SCHEDULER_SERVICE_ACCOUNT" \
 #
 # CloudRun mounts it from Secret Manager at runtime.
 # =====================================================================
+
 gcloud services enable \
-    secretmanager.googleapis.com \
-    cloudbuild.googleapis.com \
-    artifactregistry.googleapis.com \
-    cloudscheduler.googleapis.com \
-    secretmanager.googleapis.com
+  run.googleapis.com \
+  cloudbuild.googleapis.com \
+  artifactregistry.googleapis.com \
+  cloudscheduler.googleapis.com \
+  secretmanager.googleapis.com
 
 # create secrets if it does not exist.
 if ! gcloud secrets describe "$GCP_KEY_SECRET" >/dev/null 2>&1; then
@@ -104,12 +105,18 @@ bucket_name = settings.get("GCP_BUCKET_NAME")
 if not bucket_name:
     raise SystemExit("ERROR: GCP_BUCKET_NAME is missing from ENV_FILE.")
 
+hcai_url = settings.get("HCAI_DATA_URL")
+if not hcai_url:
+    raise SystemExit("ERROR: HCAI_DATA_URL is missing from ENV_FILE.")
+
 # Write YAML entries using JSON-quoted strings.
 # This avoids copying the laptop credential path into Cloud Run.
 deployment_settings = {
     "GCP_PROJECT_ID": project_id,
     "GCP_BUCKET_NAME": bucket_name,
     "GCP_SERVICE_ACCOUNT_KEY": key_path,
+    "HCAI_DATA_URL": hcai_url,
+ 
 }
 
 with open(output_path, "w", encoding="utf-8") as output:
@@ -166,12 +173,13 @@ echo "$API_SERVICE deployed at $API_SERVER_URL"
 # TODO 10: which directory holds the Streamlit Dockerfile?
 # TODO 11: which configuration variable holds the Streamlit port?
 gcloud run deploy "$WEBAPP_SERVICE" \
-  --source ./streamlit \
+  --source "$SCRIPT_DIR/streamlit" \
   --region "$REGION" \
   --port="$WEBAPP_PORT" \
   --allow-unauthenticated \
   --env-vars-file="$DEPLOY_ENV_FILE" \
-  --set-secrets="$SECRET_MOUNT_PATH=$GCP_KEY_SECRET:latest"
+  --set-secrets="$SECRET_MOUNT_PATH=$GCP_KEY_SECRET:latest" \
+  --update-env-vars="API_SERVICE_URL=$API_SERVER_URL"
 
 # TODO 12: streamlit/user_definition.py exposes API_SERVICE_URL, so the
 #          dashboard container gets the API server's address too. Which
@@ -187,22 +195,26 @@ WEBAPP_URL=$(gcloud run services describe "$WEBAPP_SERVICE" \
 echo "$WEBAPP_SERVICE deployed at $WEBAPP_URL"
 
 # =====================================================================
-# STEP 5 -- schedule the daily search.
-#
-# Cloud Scheduler sends an HTTP POST to the API server's URL on a scheule.
-# =====================================================================
-# create or update based on whether the job already exists.
-if gcloud scheduler jobs describe "$SCHEDULER_JOB" \
-     --location="$REGION" >/dev/null 2>&1; then
-  SCHEDULER_ACTION=update
-else
-  SCHEDULER_ACTION=create
-fi
+# STEP 5: Configure scheduled hospital collections.
+gcloud run services add-iam-policy-binding "$API_SERVICE" \
+  --region="$REGION" \
+  --member="serviceAccount:$SCHEDULER_SERVICE_ACCOUNT" \
+  --role="roles/run.invoker"
 
-# TODO 13: the full URL Cloud Scheduler should POST to. 
-#          Combine the API server's URL with the endpoint in
-#          fastapi/extract_save_data.py
- gcloud scheduler jobs "$action" http "$job_name" \
+configure_schedule() {
+  local job_name="$1"
+  local schedule="$2"
+  local endpoint="$3"
+  local action
+
+  if gcloud scheduler jobs describe "$job_name" \
+    --location="$REGION" >/dev/null 2>&1; then
+    action="update"
+  else
+    action="create"
+  fi
+
+  gcloud scheduler jobs "$action" http "$job_name" \
     --location="$REGION" \
     --schedule="$schedule" \
     --time-zone="$SCHEDULER_TIME_ZONE" \
@@ -211,25 +223,25 @@ fi
     --oidc-service-account-email="$SCHEDULER_SERVICE_ACCOUNT" \
     --oidc-token-audience="$API_SERVER_URL" \
     --attempt-deadline=900s
-
-
-configure_schedule \
-  "$CMS_SCHEDULER_JOB" \
-  "$CMS_SCHEDULE" \
-  "$CMS_PATH"
+}
 
 configure_schedule \
-  "$HCAI_SCHEDULER_JOB" \
-  "$HCAI_SCHEDULE" \
-  "$HCAI_PATH"
+  "$CMS_SCHEDULER_JOB" "$CMS_SCHEDULE" "$CMS_PATH"
 
 configure_schedule \
-  "$SCRAPE_SCHEDULER_JOB" \
-  "$SCRAPE_SCHEDULE" \
-  "$SCRAPE_PATH"
+  "$HCAI_SCHEDULER_JOB" "$HCAI_SCHEDULE" "$HCAI_PATH"
 
-echo
+configure_schedule \
+  "$SCRAPE_SCHEDULER_JOB" "$SCRAPE_SCHEDULE" "$SCRAPE_PATH"
+
+configure_schedule \
+  "$CROSSWALK_SCHEDULER_JOB" "$CROSSWALK_SCHEDULE" "$CROSSWALK_PATH"
+
 echo "Done."
-echo "  API:       $API_SERVER_URL"
-echo "  Dashboard: $WEBAPP_URL"
-echo "  Scheduler: $SCHEDULER_JOB ($SCHEDULE)"
+echo "API: $API_SERVER_URL"
+echo "Dashboard: $WEBAPP_URL"
+echo "CMS: $CMS_SCHEDULE"
+echo "HCAI: $HCAI_SCHEDULE"
+echo "Scraping: $SCRAPE_SCHEDULE"
+echo "Crosswalk: $CROSSWALK_SCHEDULE"
+echo "Timezone: $SCHEDULER_TIME_ZONE"

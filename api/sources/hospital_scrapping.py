@@ -7,7 +7,7 @@ import time
 
 listUrl = "https://calhospitalcompare.org/wp-content/provider_list.txt"
 pageUrl = "https://calhospitalcompare.org/hospital/?id="
-limit = 25
+limit = 400
 
 wanted = {
     "cesarean birth rate": "ntsv_cesarean_pct",

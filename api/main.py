@@ -5,6 +5,8 @@ from storage import save_dataframe, save_file
 from datetime import date
 from sources import crosswalk
 import json
+import pandas as pd
+import io
 
 
 app = FastAPI()
@@ -21,8 +23,17 @@ def run_cms_hospitals(state: str = "CA"):
 @app.post("/hcai")
 def run_hcai():
     data = ingest_hcai.fetch()
-    path = save_file(data, "hcai", "data.xlsx")
-    return {"bytes": len(data), "path": path}
+
+    df = pd.read_excel(
+        io.BytesIO(data),
+        dtype={"OSHPD_ID": str},
+    )
+
+    json_data = df.to_json(orient="records", indent=4)
+
+    path = save_file(json_data, "hcai", "data.json")
+
+    return {"rows": len(df), "path": path}
 
 @app.post("/scrape-hospitals")
 def run_scrape_hospitals():
@@ -39,5 +50,15 @@ def run_scrape_hospitals():
 @app.post("/crosswalk")
 def run_crosswalk():
     data = crosswalk.fetch()
-    path = save_file(data,"crosswalk","data.xlsx",partition=date.today().isoformat())
-    return {"bytes": len(data), "path": path}
+    df = crosswalk.frame(data)
+
+    json_data = df.to_json(orient="records", indent=4)
+
+    path = save_file(
+        json_data,
+        "crosswalk",
+        "data.json",
+        partition=date.today().isoformat(),
+    )
+
+    return {"rows": len(df), "path": path}
