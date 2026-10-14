@@ -174,11 +174,14 @@ echo "$API_SERVICE deployed at $API_SERVER_URL"
 # TODO 11: which configuration variable holds the Streamlit port?
 gcloud run deploy "$WEBAPP_SERVICE" \
   --source "$SCRIPT_DIR/streamlit" \
-  --region "$REGION" \
+  --region="$REGION" \
   --port="$WEBAPP_PORT" \
   --allow-unauthenticated \
   --env-vars-file="$DEPLOY_ENV_FILE" \
-  --set-secrets="$SECRET_MOUNT_PATH=$GCP_KEY_SECRET:latest" \
+  --set-secrets="$SECRET_MOUNT_PATH=$GCP_KEY_SECRET:latest"
+
+gcloud run services update "$WEBAPP_SERVICE" \
+  --region="$REGION" \
   --update-env-vars="API_SERVICE_URL=$API_SERVER_URL"
 
 # TODO 12: streamlit/user_definition.py exposes API_SERVICE_URL, so the
