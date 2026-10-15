@@ -7,7 +7,7 @@ import time
 
 listUrl = "https://calhospitalcompare.org/wp-content/provider_list.txt"
 pageUrl = "https://calhospitalcompare.org/hospital/?id="
-limit = 25
+limit = 50
 
 wanted = {
     "cesarean birth rate": "ntsv_cesarean_pct",
@@ -105,13 +105,12 @@ results = []
 for hospitalId in uniqueIds:
     try:
         hospitalData = scrapeHospital(hospitalId)
-        results.append(hospitalData)
+
+        if hospitalData["ntsv_cesarean_pct"] not in (None, 0):
+            results.append(hospitalData)
 
     except Exception as error:
-        results.append({
-            "oshpd_id": hospitalId,
-            "error": str(error)
-        })
+        print("Error:", hospitalId, error)
 
     time.sleep(1)
 
