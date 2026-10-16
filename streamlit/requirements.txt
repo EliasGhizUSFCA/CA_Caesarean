@@ -2,5 +2,4 @@ streamlit==1.49.1
 pandas==2.3.3
 google-cloud-storage==3.3.1
 python-dotenv==1.2.3
-plotly>=5.20
-
+plotly==6.3.0
