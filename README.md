@@ -1,5 +1,5 @@
 # CA_Caesarean
-C-section rates vary greatly from one California hospital to the next. Our team is exploring what drives that variation and building a dashboard to help the public understand these rates. By combining HCAI procedure rates with CMS hospital charactristics, Census county data, and CMQCC quality benchmarks, we created an interactive tool to help new families compare hospitals and decide where to deliver their babies.
+C-section rates vary greatly from one California hospital to the next. By combining our data from a veriety of sources. We created a dashboard tool to help new families compare hospitals and decide where to deliver their babies. This can be used by anyone expecting to deliver in California and will help families identify the best most trustworthy hospitals.
 
 ## Team Members
 
@@ -14,12 +14,14 @@ C-section rates vary greatly from one California hospital to the next. Our team 
 ---
 
 ## Problem Statement
-Cesarean delivery is typically framed as a clinical decision made for an individual patient. However, c-section rates in the United States vary wildly across hospitals, even among fairly low risk births. Our project would seek to quantify that gap for hospitals in California with visualizations that utilize available observed hospital data. We will combine HCAI's utilization rates with CMS facility characteristics, scraped Cal Hospital Compare maternity measures, United States Census county data and finally the CalHHS facility crosswalk to join these datasets. The final product would be a maps and comparison view where a user could select a county and see available hospital's, c-section, NTSV (Nulliparous, Term, Singleton, Vertex) c-section and VBAC (Vaginal Birth After Cesarean) rates side by side, filtered by year and hospital ownership type. This deliverable could serve expectant parents choosing a hospital for delivery and quality committees who want a more local benchmark than just the statewide average.
+Cesarean delivery is typically framed as a clinical decision made for an individual patient. However, c-section rates in the United States vary wildly across hospitals, even among fairly low risk births. Our project would seek to quantify that gap for hospitals in California with visualizations that utilize available observed hospital data. The final product would be a easy to read dashbord where a user could select a county and see available hospital's, c-section, NTSV (Nulliparous, Term, Singleton, Vertex) c-section and VBAC (Vaginal Birth After Cesarean) rates side by side, filtered by year and hospital ownership type. This deliverable could serve expectant parents choosing a hospital for delivery and quality committees who want a more local benchmark than just the statewide average.
+
+
 
 ---
 
 ## Data Sources and Integration Goal
-- Follow the direction given in the 1st assignment
+- With the following data we want to integrate it onto a dashboard where it is very easy to identify certain hospitals. All of the data provides different information, including hospital delivery rates, facility characteristics, and maternity care quality measures. We created a dashboard where expecting families can easily access and compare hospital information.
 
 ### Sources
 | # | Source & Link | Method | What it contains | Update frequency | Access requirements |
@@ -33,18 +35,87 @@ Cesarean delivery is typically framed as a clinical decision made for an individ
 Note: If we need a key, say which environment variable holds it and make sure that variable also appears in the .env_template
 
 ### Integration Goal
-- Follow the direction given in the 1st assignment
+- Our integration goal is to combine data from multiple healthcare data sources into one dashboard that helps expecting families make informed decisions about where to deliver their babys in California.
 
 ---
 
 ## Setup Instructions (Locally)
-NEED TO DO AT END==================
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/EliasGhizUSFCA/CA_Caesarean.git
+cd CA_Caesarean
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 2. Install Dependencies
+
+```bash
+pip install -r api/requirements.txt
+pip install -r streamlit/requirements.txt
+```
+
+### 3. Configure Environment Variables
+
+```bash
+cp .env_template .env
+```
+
+Update `.env` with the required configuration values.
+
+### 4. Start FastAPI
+
+```bash
+cd api
+uvicorn main:app --reload
+```
+
+FastAPI must run from inside `api/` because the modules use flat imports.
+
+- **Swagger UI:** http://127.0.0.1:8000/docs
+- **ReDoc:** http://127.0.0.1:8000/redoc
+
+### 5. Start Streamlit
+
+Open a separate terminal from the repository root:
+
+```bash
+source .venv/bin/activate
+streamlit run streamlit/dashboard.py
+```
+
+**Dashboard:** http://localhost:8501
+
+### 6. Populate the Google Cloud Storage Bucket
+
+From http://127.0.0.1:8000/docs, run each collector once.
+
+| Endpoint | Runtime | GCS Path |
+|----------|---------|----------|
+| `POST /crosswalk` | ~10s | `hospital/crosswalk/{date}/data.xlsx` |
+| `POST /hcai` | ~15s | `hospital/hcai/data.xlsx` |
+| `POST /cms-hospitals` | ~30s | `hospital/cms/data.csv` |
+| `POST /scrape-hospitals` | 1–2 min | `hospital/scraped-hospitals/data.json` |
+
+1. Select the endpoint.
+2. Click **Try it out**.
+3. Click **Execute**.
+4. Verify the response and confirm the data was saved to the GCS bucket.
 
 ### Prerequisites
 - Python 3.11+
 - Docker
+- fastapi
+- plotly
+- pandas
+- beautifulsoup4
+- requests
+- pydantic
+- uvicorn
+- openpxl
 - A GCP service account key with access to `PROJECT_ID` / `BUCKET_NAME` / `DATASET_NAME`
-- Census API key ([sign up here](https://api.census.gov/data/key_signup.html)), stored in `CENSUS_API_KEY`
+- run this 'pip install -r requirements.txt'
 
 ### 1. Clone the repository
 ```bash
@@ -53,7 +124,12 @@ cd REPO
 ```
 
 ### 2. Configure environment variables
-Copy the template to create your local .env file. You can add your project setting and credentials. 
+
+GCP_PROJECT_ID=
+GCP_BUCKET_NAME=
+GCP_SERVICE_ACCOUNT_KEY=
+API_SERVICE_URL=
+HCAI_DATA_URL=
 
 cp. env_template .env
 
@@ -71,35 +147,44 @@ cp. env_template .env
 ### 4. How to call your endpoint
 To start the API server,
 ```python
-fastapi run main.py
+cd CA_Caesarean
+fastapi run api/main.py
 ```
 
 ```python
-requests.post("http://localhost:8000/something", json=something)
+cd CA_Caesarean
+streamlit run streamlit/dashboard.py
 ```
 Make sure it writes the data in the bucket.
 
 ---
 ## Repository Structure
 ```
-  API
-  ├── Dockerfile
-  ├── main.py
-  ├── requirements.txt
-  ├── storage.py
-  ├── transform.py
-  ├── data1.py
-  ├── data2.py
-  ├── data3.py
-  └── data4.py
-
-  Streamlit
-  ├── Dockerfile
-  ├── dashboard.py
-  ├── requirements.txt
-  └──  user_definition.py
-
+CA_Caesarean/
+├── api/
+│   ├── sources/
+│   │   ├── __init__.py
+│   │   ├── cms.py
+│   │   ├── crosswalk.py
+│   │   ├── hospital_scrapping.py
+│   │   └── ingest_hcai.py
+│   ├── Dockerfile
+│   ├── main.py
+│   ├── requirements.txt
+│   ├── storage.py
+│   └── transform.py
+│
+├── streamlit/
+│   ├── services/
+│   │   └── .gitkeep
+│   ├── visualizations/
+│   │   └── .gitkeep
+│   ├── Dockerfile
+│   ├── dashboard.py
+│   └── requirements.txt
+│
 ├── .env_template
-├── gcloud_command.sh
-└── README.md
+├── .gitignore
+├── README.md
+└── gcloud_command.sh
 ```
