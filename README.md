@@ -161,6 +161,9 @@ Make sure it writes the data in the bucket.
 ## Repository Structure
 ```
 CA_Caesarean/
+├── .venv/
+├── .vscode/
+│
 ├── api/
 │   ├── sources/
 │   │   ├── __init__.py
@@ -183,8 +186,10 @@ CA_Caesarean/
 │   ├── dashboard.py
 │   └── requirements.txt
 │
+├── .env
 ├── .env_template
 ├── .gitignore
-├── README.md
-└── gcloud_command.sh
+├── config.sh
+├── gcloud_command.sh
+└── README.md
 ```
