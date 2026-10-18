@@ -1,31 +1,33 @@
 # AI USE: This file was written with help from Claude Opus 5.5 (Anthropic),
 # through several rounds of prompts and fixes. The prompts are listed in here 
 """
-1. "Here is our job-listings Streamlit app. Change it so that, for now, it only reads
-   the data from our GCS bucket."
-2. "Our bucket folder is hospital/ and it has more folders inside. Read every file
-   from all of them."
-3. "The sidebar shows the folders, but selecting one does not change the data. How do"
-   we make the selection filter the table?"
-4. "Keep the same structure as our job-listings code and don't add new patterns."
-5. "Should we join the sources in the dashboard, or clean and join them on the server
-   side before writing to the bucket?"
-6. "Join the scraped hospital data with the crosswalk into one dataset."
-7. "We get UnicodeDecodeError: 'utf-8' codec can't decode bytes when reading a bucket
-   file. Our files are JSON, so no other formats are needed."
-8. "Add the HCAI cesarean and VBAC data to the same join."
-9. "Here are sample records from CMS, the crosswalk, HCAI and the scraper. Merge all of
-   them into one dataset." We agreed on the join path: HCAI OSHPD_ID and scraped
-   oshpd_id to crosswalk HCAI_ID, then crosswalk CCN to CMS Facility ID.
-10. "HCAI has latitude and longitude, but the joined data does not. Why?"
-11. "Remove hospitals that don't have any useful information."
-12. "Adventist Health Dameron Hospital still shows with no C-section data. Why is it
-    still in the list?" We changed the rule so a CMS star rating alone does not count,
-    and so the newest year that has a rate is shown.
-13. "Move the loading, cleaning and merging code into its own file."
-"""
+Prompt 1: Modify Streamlit App to Read From GCS
+Here is our existing job-listings Streamlit application that we worked on earlier. I want to reuse the same structure for our hospital dashboard, but for now lets focus only on retrieving the data from our GCS bucket. Remove the job listing specific logic and update the data retrieval function to read the hospital dataset instead. Keep the existing authentication method and use Pandas to load the data into a dataframe. We can work on the visualizations and filters later, right now I just want to make sure we can successfully retrieve and display the data.
+Prompt 2: Read All Files From Nested GCS Folders
+Our GCS bucket has a main folder called hospital/, but inside that folder we have multiple subfolders containing different hospital datasets. Right now the code only reads from one location. Can we update the retrieval function to list all the blobs under the hospital/ prefix and read the JSON files from all the nested folders? Since GCS uses object prefixes rather than actual directories, we should be able to iterate through the blobs using the storage client. Make sure we are not missing files from any subfolder and handle the JSON records properly when converting them into dataframes.
+Prompt 3: Fix Sidebar Folder Filtering
+The sidebar is showing the different folders from our GCS bucket, but selecting a folder doesnt actually change the data displayed in the table. Can you check how we are applying the selected folder to the dataframe? I think we need to keep track of which folder each record came from when loading the JSON files, then use that information to filter the dataframe based on the sidebar selection. Make sure the table updates when the selection changes without having to download the files again.
+Prompt 4: Keep the Existing Code Structure
+I noticed the code is starting to look different from our original job-listings Streamlit application. Can you keep the same overall structure and coding style that we used before? I dont want to introduce new classes or complicated design patterns for something we can do with the existing functions. Try to reuse the same approach for retrieving data, creating the dataframe, and displaying the results. Only modify what is necessary for the hospital dataset.
+Prompt 5: Decide Where to Perform Data Cleaning and Joins
+We now have multiple hospital datasets coming from different sources, and eventually we need to combine them into one dataset for the dashboard. Im trying to decide whether we should load all the raw files into Streamlit and perform the cleaning and joins there, or process everything on the server side before saving a merged dataset back to GCS. Since Streamlit reruns when users interact with widgets, im concerned that joining multiple datasets in the dashboard might affect performance. Which approach would be better in terms of processing time, maintainability, and avoiding repeated transformations? Also consider that our data is not updated very frequently.
+Prompt 6: Join Scraped Hospital Data With Crosswalk
+Lets start combining our hospital datasets. We have the scraped hospital information and a crosswalk dataset that contains identifiers used across different healthcare data sources. I want to join these two datasets so we can match the scraped hospital records with the corresponding identifiers in the crosswalk. Check the available columns and make sure the hospital IDs have consistent data types before merging. Use Pandas merge() and preserve the hospital information from the scraper while adding the matching identifiers from the crosswalk. Also check for unmatched records and duplicates so we can see if the join is working correctly.
+Prompt 7: Fix UnicodeDecodeError When Reading JSON
+Im getting a UnicodeDecodeError: 'utf-8' codec can't decode bytes when trying to read one of the files from GCS. All the files we are working with are supposed to be JSON, so we dont need to support CSV or other formats. Can you check how the blob content is being downloaded and decoded before passing it to json.loads()? Maybe some files have different encoding or there are objects in the bucket that are not actual JSON files. Add some error handling so we can identify which file is causing the issue instead of having the entire data loading process fail.
+Prompt 8: Add HCAI Cesarean and VBAC Data
+Now that we have the scraped hospital data joined with the crosswalk, I want to include the HCAI dataset containing cesarean delivery and VBAC information. Use the hospital identifier from HCAI to match the corresponding records in our existing merged dataframe. Make sure we preserve the reporting year because we will need it later for trend analysis. Also check if HCAI has multiple records for the same hospital across different years, since we dont want the join to create unexpected duplicates. Keep the cesarean and VBAC metrics separate and make sure missing values are handled correctly.
+Prompt 9: Merge CMS, Crosswalk, HCAI, and Scraped Data
+Here are sample records from the four datasets we are using: CMS, the hospital crosswalk, HCAI, and our scraped hospital information. I want to combine them into one dataset that we can use for the Streamlit dashboard.
+Based on the identifiers, lets use the crosswalk as the main reference for matching hospitals across sources. The HCAI dataset uses OSHPD_ID, and our scraped data uses oshpd_id, which should match the HCAI_ID column in the crosswalk. After matching those records, use the crosswalk CCN to join the CMS data using its Facility ID column.
+Before merging, normalize the identifier columns so differences in data types or formatting dont prevent valid matches. Also be careful with leading zeros in CMS identifiers. Check the join cardinality because some datasets might contain multiple records per hospital, especially HCAI with different reporting years. I want to preserve the available hospital information without creating duplicate rows from incorrect joins. After merging, show how many hospitals matched across the sources and how many records were left unmatched.
+Prompt 10: Fix Missing Latitude and Longitude After Merge
+I noticed the original HCAI dataset has latitude and longitude columns, but those values are missing from our final merged dataframe. Can you check whether the coordinates are being dropped during column selection or if the merge is creating duplicate columns with suffixes like _x and _y? Also verify that the hospital identifiers are matching correctly between HCAI and the crosswalk. We need the coordinates for the hospital map, so make sure the final dataset retains valid latitude and longitude values without changing the existing join logic unnecessarily.
+Prompt 11: Remove Hospitals With Missing Information
+The merged dataset contains some hospitals that dont have much useful information for our dashboard. Can we filter out hospitals that have no relevant maternity care data? I dont want to remove records just because one column is missing, but hospitals with no cesarean rates, VBAC information, or other meaningful maternity indicators probably shouldnt appear in the main hospital list. Check the available columns and create a filtering condition based on whether the hospital has at least one useful maternity-related metric. Make sure missing values like None, NaN, or empty strings are handled properly.
+Prompt 12: Fix Hospitals Appearing Without Cesarean Data
+Adventist Health Dameron Hospital is still showing in the hospital list even though it doesnt have any cesarean delivery data. Can you check why this hospital is passing our filtering condition? I think the current logic might be keeping hospitals just because they have a CMS star rating, even when they dont have any maternity-related metrics. Update the condition so a CMS star rating alone is not enough for a hospital to appear in the list. Also, for hospitals with multiple reporting years, make sure we display the most recent year that actually has a valid cesarean rate rather than just selecting the latest year in the dataset, which might have a missing value. Keep the historical records available because we will need them for trend analysis.
 
-"""
 Loading, cleaning and merging the hospital data from the GCS bucket.
 
 Folders read from the bucket (hospital/):
