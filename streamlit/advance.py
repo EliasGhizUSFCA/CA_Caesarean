@@ -2,28 +2,18 @@
 # AI USE: This file was written with help from Claude Opus 5.5 (Anthropic),
 # through several rounds of prompts and fixes. The prompts are listed in
 """
-1. "Replace the folder and file selectors in the sidebar with filters that matter to
-   someone choosing a hospital."
-2. "Add a map of the hospitals, with search by hospital name or by ZIP code, showing
-   hospitals within a chosen distance of the ZIP."
-3. "What information would make this dashboard useful for expectant parents?" We then
-   asked to build: a delivers-babies filter, a hospital profile with a plain-language
-   summary, comparison with the California average and national goal, a trend over the
-   years, VBAC and midwife filters, the CMS birthing-friendly designation, star rating
-   and ER, comparing up to 3 hospitals, and address/phone/directions.
-4. "The map is very slow to load. Also remove the refresh data button."
-5. "Does refresh re-download the data from the bucket? We want a button that clears
-   the selections without downloading again."
-6. "The map is still barely visible and not loading. Can we use a different map?"
-7. "The map is not showing at all. What is wrong?"
-8. "Remove the emoji and decorative text, and match the style of our earlier code."
-9. "On the cloud we get: plotly.express has no attribute 'scatter_mapbox'. Here is our
-   requirements.txt."
-10. "The map works in Safari but not in Chrome."
-11. "Split the dashboard into a simple file for the county tab and a separate file for
-    the map, profile and compare."
-12. "Add paging to the hospital list with previous/next buttons and a hospitals-per-page
-    option."
+Prompt 1: Right now the Streamlit sidebar has options to select the GCS folder and JSON files, but I dont think users should be interacting with the bucket structure. Can we remove those selectors and have the application automatically load the hospital data from GCS? Instead, add filters that are more relevant to the users, like county, hospital name, and other available hospital information. Make sure the filters are generated from the dataframe and we are not downloading the data everytime a filter changes. We can use st.cache_data for caching.
+Prompt 2: I want to add an interactive map that shows all the California hospitals based on the latitude and longitude from our dataset. Also add a search functionality where users can search hospitals by name or enter a ZIP code to find nearby hospitals within a certain distance. For the ZIP search, we can use the Haversine formula to calculate the distance between the ZIP code coordinates and hospital locations. Let users select the radius in miles and update both the map and hospital list based on the search. Also make sure hospitals with missing coordinates dont cause issues when plotting.
+Prompt 3: Now I want to make the dashboard more useful for expectant parents rather than just showing the cesarean rates. Can we add a filter to show only hospitals that actually deliver babies? When a hospital is selected, I want a profile that shows the cesarean rate, some basic hospital information, and a simple explanation of what the data means. Also compare the hospital rate with California average and the national goal, and if we have data for multiple years show a trend chart.
+I also want to add more information like whether the hospital supports VBAC, has midwife services, CMS birthing friendly designation, hospital star rating, and if they have an emergency department. Another useful feature would be allowing users to compare upto 3 hospitals side by side. Also include the hospital address, phone number, and directions. Check what columns we already have in the dataset first, because some of these information might need another data source.
+Prompt 4: The map is taking a really long time to load, especially when I change the filters. Can you check if its because we are retrieving the data from GCS again or if the map is being rendered everytime Streamlit reruns? Try optimizing it using caching so we dont have to process the same data repeatedly. Also remove the refresh data button since the data should already be loaded automatically. I want the map to respond faster without changing the existing functionality.
+Prompt 5: Instead of the refresh button, lets add a "Clear All Selections" button that resets all the filters and hospital selections back to default. Use st.session_state for this and make sure it doesnt clear the cached dataset or download the files from GCS again.
+Prompt 6: The map is still not showing properly and sometimes its barely visible. Can we switch the map implementation to Plotly with OpenStreetMap tiles? Use scatter_map to plot the hospital coordinates and render it with st.plotly_chart. Keep the existing search and filtering logic, I just want to change how the map is displayed. Make sure users can zoom in and see hospital information when hovering over the markers.
+Prompt 7: The Plotly map is not showing at all now, but the rest of the dashboard seems to be working. Can you check if the problem is with the latitude and longitude columns, the filtered dataframe, or the Plotly configuration? Maybe try plotting a few hospitals first to see if the map works with a smaller dataset. Also check if st.plotly_chart is rendering the figure correctly. I dont want to change the entire map implementation again, just figure out whats causing the issue.
+Prompt 8: Can you remove all the emojis and unnecessary decorative text from the dashboard? I want it to look more professional and simple. Also keep the coding style similar to what we had before, including the function names, comments, and overall structure.
+Prompt 9: Im getting this error when deploying the Streamlit app: AttributeError: module 'plotly.express' has no attribute 'scatter_mapbox'. Here is my requirements.txt, can you check if its a Plotly version issue? If scatter_map is the newer function then update the code to use that and pin the correct Plotly version in requirements so it works both locally and on the cloud.
+Prompt 10: The map is working fine in Safari but for some reason its not showing in Chrome. Im not sure if this is a browser cache issue or something with Plotly and OpenStreetMap. Can you help me debug this and check what might be causing it? Maybe we need to look at Chrome developer tools or network requests to see if the map tiles are loading correctly. Since it works in Safari I dont think we need to rewrite the map again.
+Prompt 12: Can we add pagination to the hospital list? Right now its showing too many hospitals at once. Add previous and next buttons and an option to select how many hospitals to show per page. Use st.session_state to keep track of the page and reset it when filters change.
 
 Complex tabs: hospital map, hospital profile and comparing hospitals.
 
